@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta description="网站制作太好玩了！！！">
+    <script>
+      window.addEventListener('load', () => {
+        const form = document.querySelector('form');
+        const line = document.getElementById('vertical-line');
+
+        form.classList.add('slide-in');
+        line.style.height = `100vh`;
+
+        const inputs = document.querySelectorAll('input, select, button');
+        inputs.forEach(element => {
+          element.addEventListener('click', function (event) {
+            const height = event.clientY + window.scrollY;
+            line.style.height = `${height}px`;
+          })
+        });
+      });
+
+      window.addEventListener('DOMContentLoaded', (event) => {
+        const form = document.querySelector('form');
+        form.addEventListener('submit', (event) => {
+          const passConf = document.getElementById('passwordConformation');
+          const password = document.getElementById('password');
+          if ( passConf.value != password.value) {
+            event.preventDefault();
+            alert('password needs to match')
+          }
+        })
+
+        const button = document.querySelector('button'); 
+        button.addEventListener('click', () => {
+          const inputs = document.querySelectorAll('input, select');
+          const genderSelected = document.querySelector('input[name="gender"]:checked') !== null;
+          const radioGroup = document.querySelector('.radio-style');
+          if (!genderSelected) {
+            radioGroup.classList.add('red-border');
+          } else {
+            radioGroup.classList.add('green-border');
+          }
+          setTimeout(() => {
+              radioGroup.classList.remove('red-border');
+              radioGroup.classList.remove('green-border');
+          }, 3000);
+          
+          inputs.forEach(input => {
+            if (!input.value) {
+              console.log("Empty field:", input.name || input.id);
+              input.classList.add('red-border');
+            } else {
+              input.classList.add('green-border');
+            }
+            setTimeout(() => {
+              input.classList.remove('red-border');
+              input.classList.remove('green-border');
+            }, 3000);
+          })
+        })
+      })
+      
+    </script>
+
+    <title>Registration Form</title>
+    <style>
+      body {
+        font-family: 'Fira Code', monospace;
+        background: linear-gradient(to right, #132f3f 30%, #16150e 30%);
+        display: flex;
+        justify-content: center;
+        margin-top: 15%;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"],
+      input[type="date"],
+      input[type="textarea"],
+      button{
+        all: unset;
+        border-bottom: 2px solid white;
+        padding: 8px 4px;
+        width: 100%;
+        font-size: 16px;
+        transition: border-color 0.5s ease;
+        cursor: pointer;
+      }
+
+      input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1); 
+        cursor: pointer;
+      }
+
+      input[type="radio"] {
+        cursor: pointer;
+      }
+
+      label > label {
+        border-bottom: 2px solid white;
+      }
+
+      select {
+        transition: border-color 0.5s ease;
+      }
+
+      select > option{
+        color: black;
+      }
+
+      /* updates the highlight color for the document*/
+      ::selection {
+        background: #ffd44a;
+        color: #000;
+      }
+
+      #vertical-line {
+        position: fixed;
+        left: 30%;
+        top: 0;
+        width: 4px;
+        height: 0;
+        background-color: white;
+        transition: height 0.7s ease;
+      }
+
+      #profession {
+        all: unset;
+        margin: 5px 0 0 0;
+        padding: 10px 0 10px 5px;
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        border: 2px solid white;
+        border-radius: 3px;
+      }
+
+      #profession label{
+        all: unset;
+        margin-right: 10px;
+      }
+      
+      .radio-style {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 2px solid white;
+        padding: 8px 4px;
+        width: 100%;
+        transition: border-color 0.5s ease;
+      }
+
+      /* formatting for form */
+      /* the form box start transparent at 150% of the normal location */
+      .input-container {
+        width: 100%;
+        max-width: 400px;
+        opacity: 0;
+        transform: translateX(150%); 
+        transition: transform 0.7s ease, opacity 0.7s ease;
+      }
+
+      /* updates location and opacity, let transition do the work */
+      .input-container.slide-in {
+        transform: translateX(0); 
+        opacity: 1;
+      }
+
+      /* give font color to all div and buttons */
+      .input-container > div, button {
+        margin-bottom: 20px;
+        color: aliceblue;
+      }
+
+      /* formatting for button */
+      .button-style {
+        border: 2px solid #fff;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+      }
+      /* Create an empty background located at -100% left, hidden overflow hides it*/
+      .button-style::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(120deg, #5fbff7, #ffd44a);
+        transition: all 0.4s ease;
+        z-index: -1;
+      }
+
+      /* when hovering over button, do something to before (set left to 0) have background slide into place */
+      /* note button :: before : hover doesn't work because button::before doesn't have hover properties */
+      .button-style:hover::before {
+        left: 0;
+      }
+
+      .button-style:hover {
+        color: #000 !important;
+        font-weight: bold;
+        border-color: transparent;
+      }
+
+      .red-border {
+        border-color: rgb(230, 50, 50) !important;
+      }
+
+      .green-border {
+        border-color:rgb(21, 188, 21) !important;
+      }
+    </style>
+  </head>
+  <body>
+    <span id="vertical-line"></span>
+  
+    <form action="" class="input-container">
+      <div>
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" name="firstName" placeholder="Enter First Name here" autocomplete="off"
+          required></input> <br />
+      </div>
+  
+      <div>
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" name="lastName" placeholder="Enter Last Name here" autocomplete="off"
+          required></input> <br />
+      </div>
+  
+      <div>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter Email here" required autocomplete="off"> <br />
+      </div>
+  
+      <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter Password here" autocomplete="off"
+          required></input> <br />
+      </div>
+  
+      <div>
+        <label for="passwordConformation">Confirm Password</label>
+        <input type="password" id="passwordConformation" name="passwordConformation" placeholder="Enter Password again"
+          autocomplete="off" required></input> <br />
+      </div>
+  
+      <div>
+        <label for="dob">DOB</label>
+        <input type="date" id="dob" name="dob" autocomplete="off" required>
+      </div>
+  
+      <div class="radio-style">
+        <label for="gender">Gender</label>
+        <label><input type="radio" name="gender" value="male" /> Male</label>
+        <label><input type="radio" name="gender" value="female" /> Female</label>
+        <label><input type="radio" name="gender" value="other" /> Other</label>
+      </div>
+  
+      <div>
+        <label for="about">About Me</label>
+        <input type="textarea" id="about" name="about" placeholder="Input Personal Description here" /></input>
+      </div>
+  
+      <div>
+        <label for="profession">Profession</label> <br>
+        <select id="profession" name="profession">
+          <option value="" disabled selected>Select a profession</option>
+          <option value="Student">Student</option>
+          <option value="Developer">Developer</option>
+          <option value="DevOps">DevOps</option>
+        </select>
+      </div>
+  
+      <button type="submit" class="button-style">Submit</button>
+    </form>
+  </body>
+  
+  </html>
