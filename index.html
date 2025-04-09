@@ -8,7 +8,7 @@
     <script>
       window.addEventListener('load', () => {
         const form = document.querySelector('form');
-        const line = document.getElementById('vertical-line');
+        const line = document.querySelector('.vertical-line');
 
         form.classList.add('slide-in');
         line.style.height = `100vh`;
@@ -23,56 +23,86 @@
       });
 
       window.addEventListener('DOMContentLoaded', (event) => {
-        const form = document.querySelector('form');
-        form.addEventListener('submit', (event) => {
-          const passConf = document.getElementById('passwordConformation');
-          const password = document.getElementById('password');
-          if ( passConf.value != password.value) {
-            event.preventDefault();
-            alert('password needs to match')
-          }
-        })
-
-        const button = document.querySelector('button'); 
-        button.addEventListener('click', () => {
-          const inputs = document.querySelectorAll('input, select');
-          const genderSelected = document.querySelector('input[name="gender"]:checked') !== null;
+        const form = document.querySelector('button');
+        form.addEventListener('click', (event) => {
           const radioGroup = document.querySelector('.radio-style');
+          const inputs = document.querySelectorAll('input:not([type="password"]), select');
+          const password = document.getElementById('password');
+          const passConf = document.getElementById('passwordConformation');
+          const genderSelected = document.querySelector('input[name="gender"]:checked') !== null;
+          let validForm = true;
+
+          if (passConf.value !== password.value || (!passConf.value && !password.value) ) {
+            alert('Passwords need to match and non-empty');
+            passConf.classList.add('red-border');
+            password.classList.add('red-border');
+            validForm = false;
+          } else {
+            passConf.classList.add('green-border');
+            password.classList.add('green-border');
+          }
           if (!genderSelected) {
             radioGroup.classList.add('red-border');
+            validForm = false;
           } else {
             radioGroup.classList.add('green-border');
           }
-          setTimeout(() => {
-              radioGroup.classList.remove('red-border');
-              radioGroup.classList.remove('green-border');
-          }, 3000);
-          
           inputs.forEach(input => {
-            if (!input.value) {
-              console.log("Empty field:", input.name || input.id);
+            if (!input.value || !input.checkValidity()) {
               input.classList.add('red-border');
+              validForm = false;
             } else {
               input.classList.add('green-border');
             }
+
+            // Clear borders after 3s
             setTimeout(() => {
               input.classList.remove('red-border');
               input.classList.remove('green-border');
             }, 3000);
-          })
-        })
+          });
+
+          setTimeout(() => {
+            radioGroup.classList.remove('red-border');
+            radioGroup.classList.remove('green-border');
+          }, 3000);
+
+          setTimeout(() => {
+            passConf.classList.remove('red-border');
+            password.classList.remove('red-border');
+            passConf.classList.remove('green-border');
+            password.classList.remove('green-border');
+          }, 3000);
+
+          if (!validForm) {
+            event.preventDefault();
+          }
+        });
       })
       
     </script>
 
     <title>Registration Form</title>
     <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --padding-vertical: 8px;
+        --padding-horizontal: 4px;
+        --border-bottom-white: 2px solid white;
+        --transition-time: 0.7s ease;
+      }
+
       body {
         font-family: 'Fira Code', monospace;
         background: linear-gradient(to right, #132f3f 30%, #16150e 30%);
+        height: 100vh;
         display: flex;
         justify-content: center;
-        margin-top: 15%;
+        align-items: center;
       }
 
       input[type="text"],
@@ -82,12 +112,12 @@
       input[type="textarea"],
       button{
         all: unset;
-        border-bottom: 2px solid white;
-        padding: 8px 4px;
+        padding: var(--padding-vertical) var(--padding-horizontal);
         width: 100%;
         font-size: 16px;
-        transition: border-color 0.5s ease;
+        transition: border-color var(--transition-time);
         cursor: pointer;
+        border-bottom: var(--border-bottom-white);
       }
 
       input[type="date"]::-webkit-calendar-picker-indicator {
@@ -100,11 +130,11 @@
       }
 
       label > label {
-        border-bottom: 2px solid white;
+        border-bottom: var(--border-bottom-white);
       }
 
       select {
-        transition: border-color 0.5s ease;
+        transition: border-color var(--transition-time);
       }
 
       select > option{
@@ -117,28 +147,30 @@
         color: #000;
       }
 
-      #vertical-line {
+      /* settings for vertical line, with the top at 0, each time js modifies the height,
+      plays animation to extend to that height*/
+      .vertical-line {
         position: fixed;
         left: 30%;
         top: 0;
         width: 4px;
         height: 0;
         background-color: white;
-        transition: height 0.7s ease;
+        transition: height var(--transition-time);
       }
 
-      #profession {
+      .profession {
         all: unset;
         margin: 5px 0 0 0;
-        padding: 10px 0 10px 5px;
+        padding: var(--padding-vertical) var(--padding-horizontal);
         width: 100%;
         height: 100%;
         background: transparent;
-        border: 2px solid white;
+        border-bottom: var(--border-bottom-white);
         border-radius: 3px;
       }
 
-      #profession label{
+      .profession label{
         all: unset;
         margin-right: 10px;
       }
@@ -146,10 +178,10 @@
       .radio-style {
         display: flex;
         justify-content: space-between;
-        border-bottom: 2px solid white;
-        padding: 8px 4px;
+        border-bottom: var(--border-bottom-white);
+        padding: var(--padding-vertical) var(--padding-horizontal);
         width: 100%;
-        transition: border-color 0.5s ease;
+        transition: border-color var(--transition-time);
       }
 
       /* formatting for form */
@@ -159,7 +191,7 @@
         max-width: 400px;
         opacity: 0;
         transform: translateX(150%); 
-        transition: transform 0.7s ease, opacity 0.7s ease;
+        transition: transform var(--transition-time), opacity var(--transition-time);
       }
 
       /* updates location and opacity, let transition do the work */
@@ -178,7 +210,7 @@
       .button-style {
         border: 2px solid #fff;
         border-radius: 8px;
-        transition: all 0.3s ease;
+        transition: all var(--transition-time);
         position: relative;
         z-index: 1;
         overflow: hidden;
@@ -192,7 +224,7 @@
         width: 100%;
         height: 100%;
         background: linear-gradient(120deg, #5fbff7, #ffd44a);
-        transition: all 0.4s ease;
+        transition: all var(--transition-time);
         z-index: -1;
       }
 
@@ -215,13 +247,23 @@
       .green-border {
         border-color:rgb(21, 188, 21) !important;
       }
+
+      @media (max-width: 1000px) {
+        body {
+          background: #16150e;
+          
+        }
+        .vertical-line {
+          left: 0;
+        }
+      }
     </style>
   </head>
   <body>
-    <span id="vertical-line"></span>
+    <span class="vertical-line"></span>
   
     <form action="" class="input-container">
-      <div>
+      <div class="container">
         <label for="firstName">First Name</label>
         <input type="text" id="firstName" name="firstName" placeholder="Enter First Name here" autocomplete="off"
           required></input> <br />
@@ -269,7 +311,7 @@
   
       <div>
         <label for="profession">Profession</label> <br>
-        <select id="profession" name="profession">
+        <select id="profession" name="profession" class="profession">
           <option value="" disabled selected>Select a profession</option>
           <option value="Student">Student</option>
           <option value="Developer">Developer</option>
